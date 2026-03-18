@@ -945,6 +945,7 @@ html, body {
   transform: translateX(100%);
   transition: transform 0.3s ease;
   overflow-y: auto;
+  overflow-x: hidden;
   box-shadow: var(--shadow-lg);
 }
 
@@ -995,6 +996,8 @@ html, body {
 .country-section {
   padding: 14px 16px;
   border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  min-width: 0;
 }
 
 .country-section-title {
@@ -1039,6 +1042,12 @@ html, body {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: 10px;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.country-chart-container canvas {
+  max-width: 100%;
 }
 
 .country-chart-title {
@@ -1510,6 +1519,10 @@ html, body {
     right: 0;
     z-index: 200;
   }
+
+  .country-chart-container { padding: 8px; }
+  .country-chart-container canvas { height: 80px !important; }
+  .country-section { padding: 10px 12px; }
 
   /* Right rail: position below header  */
   .right-rail {
