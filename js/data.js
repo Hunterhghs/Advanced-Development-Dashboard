@@ -317,6 +317,6 @@ export const VIEW_MODES = [
   { id: 'gini', name: 'Inequality (Gini)', field: 'gini', unit: '', colorScale: 'riskScale', min: 20, max: 65, invert: true },
   { id: 'cleanEnergy', name: 'Clean Energy', field: 'cleanEnergy', unit: '%', colorScale: 'energyScale', min: 0, max: 100 },
   { id: 'lifeExp', name: 'Life Expectancy', field: 'lifeExp', unit: 'yr', colorScale: 'gdpScale', min: 50, max: 90 },
-  { id: 'pollution', name: 'Pollution (PM2.5)', field: 'pollution', unit: 'µg/m³', colorScale: 'pollutionScale', min: 0, max: 80, invert: true },
+  { id: 'pollution', name: 'Pollution (PM2.5)', field: 'pollution', unit: 'µg/m³', colorScale: 'pollutionScale', min: 0, max: 80 },
   { id: 'risk', name: 'Risk / Fragility', computed: true, unit: 'idx', colorScale: 'riskScale', min: 0, max: 1, invert: true }
 ];
