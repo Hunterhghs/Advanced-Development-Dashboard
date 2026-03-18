@@ -236,6 +236,15 @@ function simulateCountry(country, drivers, policies, shocks) {
     }
     state.lifeExp = clamp(state.lifeExp + lifeGain * (1 - state.lifeExp / 90), 40, 95);
     
+    // Pollution (PM2.5 µg/m³)
+    // Industrialization raises pollution, clean energy and governance lower it
+    let pollutionChange = 0;
+    pollutionChange += Math.max(0, gdpGrowth) * state.pollution * 0.02 * (1 - state.cleanEnergy / 100);
+    pollutionChange -= state.governance * 0.3;
+    pollutionChange -= (state.cleanEnergy / 100) * 0.4;
+    if (policies.cleanPower) pollutionChange -= 0.5;
+    state.pollution = clamp(state.pollution + pollutionChange, 2, 120);
+    
     // Gini (inequality)
     let giniChange = -0.05; // slow natural convergence
     if (policies.landReform) giniChange -= 0.15;
@@ -299,6 +308,7 @@ function simulateCountry(country, drivers, policies, shocks) {
       agriculture: Math.round(state.agriculture * 10) / 10,
       risk: Math.round(state.risk * 1000) / 1000,
       devIndex: Math.round(state.devIndex * 1000) / 1000,
+      pollution: Math.round(state.pollution * 10) / 10,
       gdpGrowth: Math.round(gdpGrowth * 10000) / 100
     });
   }

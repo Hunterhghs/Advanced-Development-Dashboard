@@ -117,6 +117,9 @@ export const COLORS = {
   // 90%+ pov = dark red, 50%+ = red, 40% = orange, 25% = yellow, 15% = light green, <10% = dark green
   devScale: ['#4a0000', '#6d0000', '#8b0000', '#b71c1c', '#d32f2f', '#e53935', '#f4511e', '#ff6e40', '#ff9800', '#fbc02d', '#c6e530', '#66bb6a', '#388e3c', '#2e7d32', '#1b5e20', '#0d3b10'],
 
+  // Pollution scale (low PM2.5 = green/blue → high PM2.5 = red/purple)
+  pollutionScale: ['#0d3b10', '#1b5e20', '#2e7d32', '#66bb6a', '#c6e530', '#fbc02d', '#ff9800', '#ff6e40', '#f4511e', '#e53935', '#d32f2f', '#b71c1c', '#8b0000', '#4a0026'],
+
   // Risk scale (low to high)
   riskScale: ['#064e3b', '#065f46', '#047857', '#ca8a04', '#ea580c', '#dc2626', '#991b1b', '#7f1d1d']
 };
