@@ -426,7 +426,9 @@ export function renderComparisonCharts(countryIds) {
   container.innerHTML = indicators.map((ind, i) => `
     <div class="comparison-chart-card">
       <div class="comparison-chart-label">${ind.label}</div>
-      <canvas id="comp-chart-${i}" style="width:100%;height:150px;"></canvas>
+      <div style="position:relative;height:120px;">
+        <canvas id="comp-chart-${i}"></canvas>
+      </div>
     </div>
   `).join('');
   
