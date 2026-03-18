@@ -60,7 +60,7 @@ function updateCountryPanel(countryId) {
         <div class="metric-value">${formatCurrency(data.gdppc)}</div>
       </div>
       <div class="metric-item">
-        <div class="metric-label">Poverty Rate</div>
+        <div class="metric-label">Total Poverty Rate</div>
         <div class="metric-value" style="color:${data.poverty > 10 ? 'var(--negative)' : 'var(--positive)'}">${formatPercent(data.poverty)}</div>
       </div>
       <div class="metric-item">
@@ -138,7 +138,7 @@ function renderCountryCharts(countryId) {
   
   const indicators = [
     { field: 'gdppc', label: 'GDP per Capita', color: COLORS.accent },
-    { field: 'poverty', label: 'Poverty Rate', color: COLORS.negative },
+    { field: 'poverty', label: 'Total Poverty Rate', color: COLORS.negative },
     { field: 'energy', label: 'Energy Access', color: COLORS.positive },
     { field: 'internet', label: 'Internet Penetration', color: '#40c4ff' }
   ];

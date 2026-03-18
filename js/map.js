@@ -191,7 +191,7 @@ function handleMouseOver(event, d) {
       <span class="map-tooltip-value">${formatCurrency(countryData.gdppc)}</span>
     </div>
     <div class="map-tooltip-row">
-      <span class="map-tooltip-label">Poverty Rate</span>
+      <span class="map-tooltip-label">Total Poverty Rate</span>
       <span class="map-tooltip-value">${formatPercent(countryData.poverty)}</span>
     </div>
     <div class="map-tooltip-row">

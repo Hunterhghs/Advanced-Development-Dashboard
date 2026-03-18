@@ -3,7 +3,7 @@ import { state } from './state.js';
 import { formatNumber, formatPercent, formatCurrency, generateSparklinePath, COLORS } from './utils.js';
 
 const KPI_DEFS = [
-  { id: 'extremePoverty', name: 'Extreme Poverty', format: 'percent', color: COLORS.negative, higherIsBad: true },
+  { id: 'extremePoverty', name: 'Total Poverty', format: 'percent', color: COLORS.negative, higherIsBad: true },
   { id: 'povertyPopulation', name: 'People in Poverty', format: 'millions', color: COLORS.negative, higherIsBad: true },
   { id: 'gdpPerCapita', name: 'GDP per Capita (PPP)', format: 'currency', color: COLORS.accent },
   { id: 'totalGDP', name: 'Global GDP', format: 'trillions', color: COLORS.accent },
