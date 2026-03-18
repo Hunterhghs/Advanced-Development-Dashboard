@@ -117,7 +117,8 @@ function drawCountries() {
     .on('mouseover', handleMouseOver)
     .on('mousemove', handleMouseMove)
     .on('mouseout', handleMouseOut)
-    .on('click', handleClick);
+    .on('click', handleClick)
+    .on('touchstart', handleTouchStart, { passive: true });
   
   // Store references
   countriesGroup.selectAll('.country-path').each(function(d) {
@@ -230,6 +231,18 @@ function handleMouseMove(event) {
 
 function handleMouseOut() {
   tooltip.classList.remove('visible');
+}
+
+function handleTouchStart(event, d) {
+  // Show tooltip at touch position for mobile
+  const touch = event.touches[0];
+  if (touch) {
+    handleMouseOver.call(this, { clientX: touch.clientX, clientY: touch.clientY }, d);
+    handleMouseMove({ clientX: touch.clientX, clientY: touch.clientY });
+    // Auto-dismiss after 3s
+    clearTimeout(handleTouchStart._timer);
+    handleTouchStart._timer = setTimeout(() => tooltip.classList.remove('visible'), 3000);
+  }
 }
 
 function handleClick(event, d) {

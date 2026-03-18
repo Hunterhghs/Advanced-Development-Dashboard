@@ -251,4 +251,21 @@ function initMobileMenu() {
       overlay.classList.remove('visible');
     });
   }
+
+  // Bottom panel toggle for mobile
+  const panelHandle = document.getElementById('bottom-panel-handle');
+  const bottomPanel = document.getElementById('bottom-panel');
+  if (panelHandle && bottomPanel) {
+    panelHandle.addEventListener('click', () => {
+      bottomPanel.classList.toggle('expanded');
+    });
+    // Also expand when tapping a tab while collapsed
+    bottomPanel.querySelectorAll('.bottom-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        if (window.innerWidth <= 768 && !bottomPanel.classList.contains('expanded')) {
+          bottomPanel.classList.add('expanded');
+        }
+      });
+    });
+  }
 }
