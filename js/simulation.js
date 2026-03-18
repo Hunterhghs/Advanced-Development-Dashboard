@@ -67,13 +67,14 @@ function getConvergenceFactor(gdppc) {
   return 0.7;
 }
 
-// Poverty-growth elasticity (how much poverty falls per % GDP growth)
+// Poverty-growth elasticity for total poverty ($6.85/day)
+// Lower than extreme-poverty elasticity since the higher line is harder to cross
 function getPovertyElasticity(gini) {
   // Higher inequality means less poverty reduction per unit growth
-  if (gini > 50) return 1.2;
-  if (gini > 40) return 1.8;
-  if (gini > 30) return 2.5;
-  return 3.0;
+  if (gini > 50) return 0.4;
+  if (gini > 40) return 0.6;
+  if (gini > 30) return 0.8;
+  return 1.0;
 }
 
 // Region-specific vulnerability to shocks
@@ -164,14 +165,10 @@ function simulateCountry(country, drivers, policies, shocks) {
     // Apply GDP growth
     state.gdppc = state.gdppc * (1 + gdpGrowth);
     
-    // Poverty reduction
+    // Poverty reduction (symmetric: growth reduces poverty, contraction increases it)
     const povertyElasticity = getPovertyElasticity(state.gini);
-    if (gdpGrowth > 0) {
-      const povertyReduction = state.poverty * (gdpGrowth * povertyElasticity / 100) * 1.2;
-      state.poverty = Math.max(0, state.poverty - povertyReduction);
-    } else {
-      state.poverty = Math.min(90, state.poverty - gdpGrowth * 5);
-    }
+    const povertyChange = state.poverty * gdpGrowth * povertyElasticity;
+    state.poverty = clamp(state.poverty - povertyChange, 0, 90);
     
     // Policy effects on poverty
     for (const [policy, active] of Object.entries(policies)) {
@@ -187,7 +184,7 @@ function simulateCountry(country, drivers, policies, shocks) {
     // Shock effects on poverty
     for (const [shock, severity] of Object.entries(shocks)) {
       if (SHOCK_EFFECTS[shock] && SHOCK_EFFECTS[shock].poverty) {
-        state.poverty = Math.min(90, state.poverty + SHOCK_EFFECTS[shock].poverty * severity * vulnerability * 100);
+        state.poverty = Math.min(90, state.poverty + SHOCK_EFFECTS[shock].poverty * severity * vulnerability * 10);
       }
     }
     state.poverty = clamp(state.poverty, 0, 90);

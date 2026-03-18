@@ -64,7 +64,7 @@ export function renderTrendCharts() {
   if (!panel) return;
   
   const indicators = [
-    { field: 'extremePoverty', label: 'Global Extreme Poverty (%)', color: COLORS.negative },
+    { field: 'extremePoverty', label: 'Global Total Poverty (%)', color: COLORS.negative },
     { field: 'gdpPerCapita', label: 'Global GDP per Capita ($)', color: COLORS.accent },
     { field: 'energyAccess', label: 'Energy Access (%)', color: COLORS.positive },
     { field: 'internetAccess', label: 'Internet Access (%)', color: '#40c4ff' },
