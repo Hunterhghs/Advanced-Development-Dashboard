@@ -13,6 +13,12 @@ export function initComparison() {
     addBtn.addEventListener('click', openComparisonPicker);
   }
   
+  // Compare button in country drawer
+  const countryCompareBtn = document.getElementById('country-compare-btn');
+  if (countryCompareBtn) {
+    countryCompareBtn.addEventListener('click', openComparisonPicker);
+  }
+
   // Modal close
   document.querySelector('.comparison-modal')?.addEventListener('click', (e) => {
     if (e.target.classList.contains('comparison-modal')) {
