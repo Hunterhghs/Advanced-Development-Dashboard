@@ -493,13 +493,42 @@ html, body {
   stroke-width: 1;
 }
 
+.trade-arc-glow {
+  fill: none;
+  pointer-events: none;
+}
+
 .trade-arc.animated {
   stroke-dasharray: 8, 4;
   animation: flowDash 1.5s linear infinite;
 }
 
+.flow-particle {
+  pointer-events: none;
+  filter: url(#flow-glow);
+}
+
 @keyframes flowDash {
   to { stroke-dashoffset: -12; }
+}
+
+/* Diffusion nodes */
+.node-label {
+  pointer-events: none;
+  text-shadow: 0 0 4px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.5);
+}
+
+.node-core {
+  cursor: pointer;
+  transition: fill-opacity 0.2s;
+}
+
+.node-core:hover {
+  fill-opacity: 1;
+}
+
+.node-pulse {
+  pointer-events: none;
 }
 
 /* === RIGHT RAIL (CONTROLS) === */

@@ -1,6 +1,6 @@
 // Interactive D3 World Map for the Prosperity Diffusion Dashboard
 import { state } from './state.js';
-import { COUNTRIES, COUNTRY_BY_ID, VIEW_MODES, TRADE_FLOWS, COUNTRY_BY_ISO3 } from './data.js';
+import { COUNTRIES, COUNTRY_BY_ID, VIEW_MODES, TRADE_FLOWS, COUNTRY_BY_ISO3, DIFFUSION_NODES } from './data.js';
 import { COLORS, getColorScale, formatNumber, formatPercent, formatCurrency } from './utils.js';
 
 let svg, g, projection, path, zoom;
@@ -8,7 +8,8 @@ let countryPaths = {};
 let tooltip, legendEl;
 let width, height;
 let topoData = null;
-let flowsGroup, countriesGroup, graticuleGroup;
+let flowsGroup, countriesGroup, graticuleGroup, nodesGroup;
+let showNodes = true;
 
 export function initMap() {
   const container = document.querySelector('.map-container');
@@ -62,6 +63,9 @@ export function initMap() {
   // Flows layer
   flowsGroup = g.append('g').attr('class', 'flows-group');
   
+  // Diffusion nodes layer
+  nodesGroup = g.append('g').attr('class', 'nodes-group');
+  
   // Tooltip
   tooltip = document.querySelector('.map-tooltip');
   legendEl = document.querySelector('.map-legend');
@@ -84,7 +88,7 @@ export function initMap() {
   state.on('viewModeChange', () => { updateColors(); updateLegend(); });
   state.on('countrySelect', (id) => highlightCountry(id));
   state.on('countryDeselect', () => clearHighlight());
-  state.on('flowsChange', ({ show }) => { if (show) drawFlows(); else clearFlows(); });
+  state.on('flowsChange', ({ show }) => { if (show) { drawFlows(); drawDiffusionNodes(); } else { clearFlows(); clearNodes(); } });
 }
 
 async function loadWorldData() {
@@ -264,8 +268,46 @@ function updateComparisonHighlights() {
   }
 }
 
+const FLOW_COLORS = {
+  trade: '#00d4ff',
+  energy: '#ffab00',
+  tech: '#b388ff',
+  finance: '#00e676'
+};
+
 function drawFlows() {
   clearFlows();
+  
+  // Add SVG defs for arrowheads and glow
+  let defs = svg.select('defs');
+  if (defs.empty()) defs = svg.append('defs');
+  
+  // Arrow markers per type
+  for (const [type, color] of Object.entries(FLOW_COLORS)) {
+    if (defs.select(`#arrow-${type}`).empty()) {
+      defs.append('marker')
+        .attr('id', `arrow-${type}`)
+        .attr('viewBox', '0 0 10 6')
+        .attr('refX', 10)
+        .attr('refY', 3)
+        .attr('markerWidth', 8)
+        .attr('markerHeight', 5)
+        .attr('orient', 'auto')
+        .append('path')
+        .attr('d', 'M0,0 L10,3 L0,6 Z')
+        .attr('fill', color)
+        .attr('fill-opacity', 0.6);
+    }
+  }
+  
+  // Glow filter
+  if (defs.select('#flow-glow').empty()) {
+    const glow = defs.append('filter').attr('id', 'flow-glow');
+    glow.append('feGaussianBlur').attr('stdDeviation', '2').attr('result', 'coloredBlur');
+    const merge = glow.append('feMerge');
+    merge.append('feMergeNode').attr('in', 'coloredBlur');
+    merge.append('feMergeNode').attr('in', 'SourceGraphic');
+  }
   
   const flows = TRADE_FLOWS.filter(f => {
     const fromC = COUNTRY_BY_ISO3[f.from];
@@ -273,7 +315,7 @@ function drawFlows() {
     return fromC && toC;
   });
   
-  flows.forEach(flow => {
+  flows.forEach((flow, i) => {
     const from = COUNTRY_BY_ISO3[flow.from];
     const to = COUNTRY_BY_ISO3[flow.to];
     
@@ -282,24 +324,153 @@ function drawFlows() {
     
     if (!source || !target) return;
     
-    // Create curved path
     const dx = target[0] - source[0];
     const dy = target[1] - source[1];
-    const dr = Math.sqrt(dx * dx + dy * dy) * 1.5;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const dr = dist * 1.5;
     
-    const opacity = Math.min(0.5, flow.volume / 600 * 0.4 + 0.1);
+    const color = FLOW_COLORS[flow.type] || FLOW_COLORS.trade;
+    const opacity = Math.min(0.55, flow.volume / 600 * 0.4 + 0.12);
     const strokeWidth = Math.min(2.5, flow.volume / 600 * 2 + 0.5);
     
+    const pathD = `M${source[0]},${source[1]}A${dr},${dr} 0 0,1 ${target[0]},${target[1]}`;
+    
+    // Glow under-layer
+    flowsGroup.append('path')
+      .attr('class', 'trade-arc-glow')
+      .attr('d', pathD)
+      .style('stroke', color)
+      .style('stroke-opacity', opacity * 0.3)
+      .style('stroke-width', strokeWidth + 2)
+      .style('filter', 'url(#flow-glow)');
+    
+    // Main arc
     flowsGroup.append('path')
       .attr('class', 'trade-arc animated')
-      .attr('d', `M${source[0]},${source[1]}A${dr},${dr} 0 0,1 ${target[0]},${target[1]}`)
+      .attr('d', pathD)
+      .attr('id', `flow-path-${i}`)
+      .style('stroke', color)
       .style('stroke-opacity', opacity)
-      .style('stroke-width', strokeWidth);
+      .style('stroke-width', strokeWidth)
+      .attr('marker-end', `url(#arrow-${flow.type || 'trade'})`);
+    
+    // Animated particle along path
+    if (flow.volume > 30) {
+      const particle = flowsGroup.append('circle')
+        .attr('class', 'flow-particle')
+        .attr('r', Math.min(3, strokeWidth + 0.5))
+        .attr('fill', color)
+        .attr('fill-opacity', 0.9);
+      
+      function animateParticle() {
+        const pathEl = flowsGroup.select(`#flow-path-${i}`).node();
+        if (!pathEl) return;
+        const totalLength = pathEl.getTotalLength();
+        particle
+          .attr('opacity', 1)
+          .transition()
+          .duration(2000 + Math.random() * 2000)
+          .ease(d3.easeLinear)
+          .attrTween('transform', function() {
+            return function(t) {
+              const pt = pathEl.getPointAtLength(t * totalLength);
+              return `translate(${pt.x},${pt.y})`;
+            };
+          })
+          .on('end', animateParticle);
+      }
+      // Stagger starts
+      setTimeout(animateParticle, Math.random() * 2000);
+    }
   });
 }
 
 function clearFlows() {
   flowsGroup.selectAll('*').remove();
+}
+
+function drawDiffusionNodes() {
+  clearNodes();
+  
+  const NODE_COLORS = {
+    finance: '#00e676',
+    trade: '#00d4ff',
+    tech: '#b388ff',
+    manufacturing: '#ff9100'
+  };
+  
+  const tierRadius = { 1: 5, 2: 3.5, 3: 2.5 };
+  const tierPulse = { 1: 10, 2: 7, 3: 5 };
+  
+  DIFFUSION_NODES.forEach(node => {
+    const pos = projection([node.lon, node.lat]);
+    if (!pos) return;
+    
+    const color = NODE_COLORS[node.type] || '#00d4ff';
+    const r = tierRadius[node.tier] || 3;
+    const pulseR = tierPulse[node.tier] || 6;
+    
+    const nodeG = nodesGroup.append('g')
+      .attr('transform', `translate(${pos[0]},${pos[1]})`);
+    
+    // Pulse ring
+    nodeG.append('circle')
+      .attr('class', 'node-pulse')
+      .attr('r', r)
+      .attr('fill', 'none')
+      .attr('stroke', color)
+      .attr('stroke-width', 1)
+      .attr('stroke-opacity', 0.6);
+    
+    // Solid core
+    nodeG.append('circle')
+      .attr('class', 'node-core')
+      .attr('r', r)
+      .attr('fill', color)
+      .attr('fill-opacity', 0.85)
+      .attr('stroke', '#fff')
+      .attr('stroke-width', node.tier === 1 ? 1.2 : 0.6)
+      .attr('stroke-opacity', 0.5);
+    
+    // Label for tier 1 & 2
+    if (node.tier <= 2) {
+      nodeG.append('text')
+        .attr('class', 'node-label')
+        .attr('x', r + 3)
+        .attr('y', 3)
+        .attr('fill', '#c0c8d8')
+        .attr('font-size', node.tier === 1 ? '7px' : '5.5px')
+        .attr('font-family', 'Inter, sans-serif')
+        .attr('font-weight', node.tier === 1 ? '600' : '400')
+        .attr('opacity', node.tier === 1 ? 0.9 : 0.7)
+        .text(node.name);
+    }
+  });
+  
+  // Animate pulse rings
+  function pulseAnimate() {
+    nodesGroup.selectAll('.node-pulse')
+      .transition()
+      .duration(2000)
+      .attr('r', function() {
+        const core = d3.select(this.parentNode).select('.node-core');
+        return parseFloat(core.attr('r')) * 2.5;
+      })
+      .attr('stroke-opacity', 0)
+      .transition()
+      .duration(0)
+      .attr('r', function() {
+        const core = d3.select(this.parentNode).select('.node-core');
+        return parseFloat(core.attr('r'));
+      })
+      .attr('stroke-opacity', 0.6)
+      .on('end', pulseAnimate);
+  }
+  pulseAnimate();
+}
+
+function clearNodes() {
+  nodesGroup.selectAll('*').remove();
 }
 
 function updateLegend() {
@@ -379,7 +550,10 @@ function handleResize() {
     countriesGroup.selectAll('.country-path').attr('d', path);
     g.select('.sphere').attr('d', path);
     g.select('.graticule').attr('d', path);
-    if (state.showFlows) drawFlows();
+    if (state.showFlows) {
+      drawFlows();
+      drawDiffusionNodes();
+    }
   }
 }
 
