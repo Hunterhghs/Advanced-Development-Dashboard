@@ -321,7 +321,7 @@ export const SCENARIOS = {
 // View modes
 export const VIEW_MODES = [
   { id: 'devIndex', name: 'Development', field: 'devIndex', unit: 'idx', colorScale: 'devScale', min: 0, max: 1, computed: true },
-  { id: 'poverty', name: 'Poverty', field: 'poverty', unit: '%', colorScale: 'povertyScale', min: 0, max: 70 },
+  { id: 'poverty', name: 'Poverty', field: 'poverty', unit: '%', colorScale: 'povertyScale', min: 0, max: 80 },
   { id: 'gdppc', name: 'GDP per Capita', field: 'gdppc', unit: '$', colorScale: 'gdpScale', min: 500, max: 100000, log: true },
   { id: 'energy', name: 'Energy Access', field: 'energy', unit: '%', colorScale: 'energyScale', min: 0, max: 100 },
   { id: 'internet', name: 'Digital Connectivity', field: 'internet', unit: '%', colorScale: 'digitalScale', min: 0, max: 100 },
