@@ -7,7 +7,7 @@ class AppState {
     this.year = 2025;
     this.yearIndex = 0;
     this.playing = false;
-    this.playSpeed = 300; // ms per year
+    this.playSpeed = 500; // ms per year
     this.scenario = 'baseline';
     this.viewMode = 'devIndex';
     this.geoMode = 'global';

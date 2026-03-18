@@ -78,8 +78,8 @@ function initYearControls() {
   
   if (speedBtn) {
     speedBtn.addEventListener('click', () => {
-      const speeds = [500, 300, 150, 80];
-      const labels = ['1×', '2×', '3×', '5×'];
+      const speeds = [1000, 500, 300, 150, 80];
+      const labels = ['½×', '1×', '2×', '3×', '5×'];
       const idx = speeds.indexOf(state.playSpeed);
       const next = (idx + 1) % speeds.length;
       state.playSpeed = speeds[next];

@@ -97,8 +97,9 @@ export const COLORS = {
   // Chart palette
   chart: ['#00d4ff', '#00e676', '#ffab00', '#ff5252', '#b388ff', '#ff80ab', '#ff9100', '#69f0ae', '#40c4ff', '#ea80fc'],
   
-  // Poverty scale (0% = dark green, 75%+ = dark red)
-  povertyScale: ['#1b5e20', '#2e7d32', '#43a047', '#66bb6a', '#a5d6a7', '#fff9c4', '#ffe082', '#ffb74d', '#ff8a65', '#ef5350', '#e53935', '#c62828', '#b71c1c', '#7f0000'],
+  // Poverty scale (0% = dark green, 90%+ = dark red)
+  // <10% = dark green, 15% = light green, 25% = yellow, 40% = orange, 50%+ = red, 90% = dark red
+  povertyScale: ['#0d3b10', '#1b5e20', '#2e7d32', '#388e3c', '#66bb6a', '#c6e530', '#fbc02d', '#ff9800', '#ff6e40', '#f4511e', '#e53935', '#d32f2f', '#b71c1c', '#8b0000', '#6d0000', '#4a0000'],
   
   // GDP scale (low to high)
   gdpScale: ['#1a0a2e', '#2d1b69', '#1e3a8a', '#1e40af', '#0369a1', '#0891b2', '#0d9488', '#059669', '#16a34a', '#65a30d', '#ca8a04', '#ea580c'],
@@ -113,7 +114,8 @@ export const COLORS = {
   digitalScale: ['#1a0a2e', '#1e1b4b', '#312e81', '#4338ca', '#6366f1', '#818cf8', '#c4b5fd'],
   
   // Development Index scale (low=dark red → high=dark green, poverty-attuned)
-  devScale: ['#4a0000', '#7f0000', '#b71c1c', '#d32f2f', '#e53935', '#ff6e40', '#ff9800', '#ffb300', '#fdd835', '#c6e530', '#66bb6a', '#43a047', '#2e7d32', '#1b5e20'],
+  // 90%+ pov = dark red, 50%+ = red, 40% = orange, 25% = yellow, 15% = light green, <10% = dark green
+  devScale: ['#4a0000', '#6d0000', '#8b0000', '#b71c1c', '#d32f2f', '#e53935', '#f4511e', '#ff6e40', '#ff9800', '#fbc02d', '#c6e530', '#66bb6a', '#388e3c', '#2e7d32', '#1b5e20', '#0d3b10'],
 
   // Risk scale (low to high)
   riskScale: ['#064e3b', '#065f46', '#047857', '#ca8a04', '#ea580c', '#dc2626', '#991b1b', '#7f1d1d']
