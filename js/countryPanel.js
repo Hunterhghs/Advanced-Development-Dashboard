@@ -146,7 +146,9 @@ function renderCountryCharts(countryId) {
   chartsEl.innerHTML = indicators.map((ind, i) => `
     <div class="country-chart-container">
       <div class="country-chart-title">${ind.label}</div>
-      <canvas id="cc-${i}" style="width:100%;height:100px;"></canvas>
+      <div style="position:relative;height:100px;">
+        <canvas id="cc-${i}"></canvas>
+      </div>
     </div>
   `).join('');
   
