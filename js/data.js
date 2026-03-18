@@ -301,20 +301,6 @@ export const SCENARIOS = {
     drivers: { infrastructure: 0.3, digital: 0.4, trade: 0.2, institutions: 0.3, humanCapital: 0.4, demographics: 0.5, energy: 0.3, urbanProductivity: 0.4, financialInclusion: 0.3, industrialPolicy: 0.3, ruleOfLaw: 0.3, exportComplexity: 0.3 },
     policies: {},
     shocks: { climate: 0.5, commodity: 0.6, conflict: 0.5, debt: 0.6, pandemic: 0.2, aiAdoption: 0.2, friendShoring: 0.8, techTransfer: 0.2 }
-  },
-  greenLeapfrog: {
-    name: 'Green Leapfrog',
-    description: 'Massive clean energy deployment and green industrialization enables developing nations to leapfrog fossil fuel dependency. Strong climate action with new economic pathways.',
-    drivers: { infrastructure: 0.7, digital: 0.7, trade: 0.6, institutions: 0.6, humanCapital: 0.7, demographics: 0.5, energy: 0.9, urbanProductivity: 0.7, financialInclusion: 0.6, industrialPolicy: 0.7, ruleOfLaw: 0.5, exportComplexity: 0.6 },
-    policies: { cleanPower: true, grid: true, broadband: true, manufacturing: true, education: true },
-    shocks: { climate: 0.15, commodity: 0.4, conflict: 0.15, debt: 0.3, pandemic: 0.1, aiAdoption: 0.6, friendShoring: 0.4, techTransfer: 0.6 }
-  },
-  regionalBloc: {
-    name: 'Regional Bloc Growth',
-    description: 'Growth concentrated within regional trading blocs. Strong intra-regional cooperation but limited cross-bloc exchange. Uneven development outcomes.',
-    drivers: { infrastructure: 0.6, digital: 0.5, trade: 0.4, institutions: 0.5, humanCapital: 0.5, demographics: 0.5, energy: 0.5, urbanProductivity: 0.6, financialInclusion: 0.5, industrialPolicy: 0.6, ruleOfLaw: 0.5, exportComplexity: 0.5 },
-    policies: { ports: true, manufacturing: true, regionalTrade: true },
-    shocks: { climate: 0.35, commodity: 0.5, conflict: 0.3, debt: 0.4, pandemic: 0.15, aiAdoption: 0.4, friendShoring: 0.7, techTransfer: 0.35 }
   }
 };
 
